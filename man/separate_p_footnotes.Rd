@@ -4,7 +4,7 @@
 \alias{separate_p_footnotes}
 \title{Create footnotes for individual p-values}
 \usage{
-separate_p_footnotes(x)
+separate_p_footnotes(x, footnote_prefix = NULL)
 }
 \arguments{
 \item{x}{(\code{tbl_summary}, \code{tbl_svysummary})\cr

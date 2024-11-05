@@ -48,6 +48,7 @@ add_p <- function(x, ...) {
 #' @param adj.vars ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Variables to include in adjusted calculations (e.g. in ANCOVA models).
 #'   Default is `NULL`.
+#' @param footnote_prefix Optional prefix to test footnotes.
 #' @inheritParams rlang::args_dots_empty
 #'
 #' @return a gtsummary table of class `"tbl_summary"`
@@ -105,6 +106,7 @@ add_p.tbl_summary <- function(x,
                               group = NULL,
                               include = everything(),
                               test.args = NULL,
+                              footnote_prefix = NULL,
                               adj.vars = NULL,
                               ...) {
   set_cli_abort_call()
@@ -211,6 +213,7 @@ add_p.tbl_summary <- function(x,
   x <-
     calculate_and_add_test_results(
       x = x, include = include, group = group, test.args = test.args, adj.vars = adj.vars,
+      footnote_prefix = footnote_prefix,
       df_test_meta_data = df_test_meta_data, pvalue_fun = pvalue_fun, calling_fun = "add_p"
     )
 
@@ -225,7 +228,8 @@ add_p.tbl_summary <- function(x,
   x
 }
 
-calculate_and_add_test_results <- function(x, include, group = NULL, test.args, adj.vars = NULL,
+calculate_and_add_test_results <- function(x, include, group = NULL, test.args,
+                                           adj.vars = NULL, footnote_prefix = NULL,
                                            df_test_meta_data, pvalue_fun = NULL,
                                            estimate_fun = NULL, conf.level = 0.95,
                                            calling_fun, continuous_variable = NULL) {
@@ -388,9 +392,14 @@ calculate_and_add_test_results <- function(x, include, group = NULL, test.args, 
         ft <- x |>
           dplyr::filter(.data$stat_name %in% "method") |>
           dplyr::pull("stat") |>
-          unlist()
+          unlist() |>
+          paste(footnote_prefix, . = _)
       } else {
-        ft <- x[["method"]]
+        if(!is.null(footnote_prefix)){
+          ft <- paste(footnote_prefix, x[['method']])
+        } else{
+          ft <- x[["method"]]
+        }
       }
       ft
     }
