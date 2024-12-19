@@ -99,7 +99,7 @@ add_p.tbl_cross <- function(x,
   # report p-value as source note ----------------------------------------------
   if (source_note == TRUE) {
     test_name <-
-      x$table_styling$footnote |>
+      x$table_styling$footnote_header |>
       dplyr::filter(.data$column %in% "p.value") |>
       dplyr::pull("footnote")
 
@@ -109,11 +109,12 @@ add_p.tbl_cross <- function(x,
         columns = "p.value",
         footnote = NA_character_,
         hide = TRUE
+      ) |>
+      modify_source_note(
+        source_note =
+          paste(test_name, pvalue_fun(discard(x$table_body$p.value, is.na)), sep = ", "),
+        text_interpret = "md"
       )
-
-    x$table_styling$source_note <-
-      paste(test_name, pvalue_fun(discard(x$table_body$p.value, is.na)), sep = ", ")
-    attr(x$table_styling$source_note, "text_interpret") <- "md"
   }
 
   # strip markdown bold around column label ------------------------------------

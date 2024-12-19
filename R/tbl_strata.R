@@ -1,6 +1,5 @@
 #' Stratified gtsummary tables
 #'
-#' \lifecycle{maturing}\cr
 #' Build a stratified gtsummary table. Any gtsummary table that accepts
 #' a data frame as its first argument can be stratified.
 #' - In `tbl_strata()`, the stratified or subset data frame is passed to the
@@ -54,7 +53,7 @@
 #' @author Daniel D. Sjoberg
 #' @name tbl_strata
 #'
-#' @examples
+#' @examplesIf (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) && gtsummary:::is_pkg_installed(c("cardx", "broom"))
 #' # Example 1 ----------------------------------
 #' trial |>
 #'   select(age, grade, stage, trt) |>
@@ -83,10 +82,9 @@
 #'         ) |>
 #'         add_ci(pattern = "{stat} ({ci})") |>
 #'         modify_header(stat_0 = "**Rate (95% CI)**") |>
-#'         modify_footnote(stat_0 = NA),
+#'         remove_footnote_header(stat_0),
 #'     .combine_with = "tbl_stack",
-#'     .combine_args = list(group_header = NULL),
-#'     .quiet = TRUE
+#'     .combine_args = list(group_header = NULL)
 #'   ) |>
 #'   modify_caption("**Response Rate by Grade**")
 NULL
