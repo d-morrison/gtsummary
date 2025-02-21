@@ -105,7 +105,9 @@ tbl_stack <- function(tbls, group_header = NULL, quiet = FALSE) {
     dplyr::filter(.by = "column", dplyr::row_number() == 1)
 
   # cycle over each of the styling tibbles and stack them in reverse order -----
-  for (style_type in c("footnote", "footnote_abbrev", "fmt_fun", "text_format", "indent", "fmt_missing", "cols_merge")) {
+  for (style_type in c("spanning_header", "footnote_header", "footnote_body",
+                       "footnote_spanning_header", "abbreviation", "source_note",
+                       "fmt_fun", "text_format", "indent", "fmt_missing", "cols_merge")) {
     results$table_styling[[style_type]] <-
       map(
         rev(seq_along(tbls)),
@@ -142,7 +144,7 @@ tbl_stack <- function(tbls, group_header = NULL, quiet = FALSE) {
   }
 
   # take the first non-NULL element from tbls[[.]]
-  for (style_type in c("caption", "source_note", "horizontal_line_above")) {
+  for (style_type in c("caption", "horizontal_line_above")) {
     results$table_styling[[style_type]] <-
       map(seq_along(tbls), ~ tbls[[.x]][["table_styling"]][[style_type]]) |>
       reduce(.f = \(.x, .y) .x %||% .y)
@@ -175,14 +177,13 @@ tbl_stack <- function(tbls, group_header = NULL, quiet = FALSE) {
         dplyr::mutate(..tbl_id.. = .y)
     ) |>
     dplyr::bind_rows() |>
-    dplyr::select("..tbl_id..", "column", "label", "spanning_header") |>
-    tidyr::pivot_longer(cols = c("label", "spanning_header")) |>
+    dplyr::select("..tbl_id..", "column", "label") |>
+    tidyr::pivot_longer(cols = c("label")) |>
     dplyr::group_by(.data$column, .data$name) |>
     dplyr::mutate(
       new_value = .data$value[1],
       name_fmt = dplyr::case_when(
-        name == "label" ~ "Column header",
-        name == "spanning_header" ~ "Spanning column header"
+        name == "label" ~ "Column header"
       )
     ) |>
     dplyr::filter(.data$new_value != .data$value) |>
