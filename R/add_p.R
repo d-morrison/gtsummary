@@ -407,7 +407,9 @@ calculate_and_add_test_results <- function(x, include, group = NULL, test.args,
     unlist() |>
     unique() |>
     translate_vector() |>
-    paste(collapse = "; ")
+    paste(collapse = "; ") |>
+    gsub(paste("\\;", footnote_prefix), "\\;", x = _)
+
   if (footnote == "" || is_empty(footnote)) footnote <- NULL # styler: off
 
   # add results to `.$table_body` ----------------------------------------------
