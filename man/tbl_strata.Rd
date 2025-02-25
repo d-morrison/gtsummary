@@ -14,7 +14,6 @@ tbl_strata(
   .combine_with = c("tbl_merge", "tbl_stack"),
   .combine_args = NULL,
   .header = ifelse(.combine_with == "tbl_merge", "**{strata}**", "{strata}"),
-  .stack_group_header = NULL,
   .quiet = NULL
 )
 
@@ -27,7 +26,6 @@ tbl_strata2(
   .combine_with = c("tbl_merge", "tbl_stack"),
   .combine_args = NULL,
   .header = ifelse(.combine_with == "tbl_merge", "**{strata}**", "{strata}"),
-  .stack_group_header = NULL,
   .quiet = TRUE
 )
 }
@@ -36,7 +34,8 @@ tbl_strata2(
 a data frame or survey object}
 
 \item{strata}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-character vector or tidy-selector of columns in data to stratify results by}
+character vector or tidy-selector of columns in data to stratify results by.
+Only \emph{observed} combinations are shown in results.}
 
 \item{.tbl_fun}{(\code{function})
 A function or formula. If a \emph{function}, it is used as is.
@@ -66,8 +65,6 @@ curly brackets will be evaluated according to \code{glue::glue()} syntax.
 - \code{N} Overall N
 
 The evaluated value of \code{.header} is also available within \code{tbl_strata2(.tbl_fun)}}
-
-\item{.stack_group_header}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}}
 
 \item{.quiet}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}}
 }
