@@ -84,7 +84,7 @@ add_p <- function(x, ...) {
 #'
 #'  - `"ancova"` when variable is continuous and `by` variable has two levels.
 #'
-#' @examplesIf gtsummary:::is_pkg_installed("cardx") && gtsummary:::is_pkg_installed("broom", ref = "cardx")
+#' @examplesIf (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) && gtsummary:::is_pkg_installed("cardx") && gtsummary:::is_pkg_installed("broom", ref = "cardx")
 #' # Example 1 ----------------------------------
 #' trial |>
 #'   tbl_summary(by = trt, include = c(age, grade)) |>
@@ -273,7 +273,7 @@ calculate_and_add_test_results <- function(x, include, group = NULL, test.args,
         if (!is.null(lst_captured_results[["result"]])) return(lst_captured_results[["result"]]) # styler: off
         # otherwise, construct a {cards}-like object with error
         dplyr::tibble(
-          group1 = x$inputs$by,
+          group1 = switch(!is_empty(x$inputs$by), x$inputs$by),
           variable = variable,
           stat_name = switch(calling_fun,
                              "add_p" = "p.value",
@@ -407,7 +407,9 @@ calculate_and_add_test_results <- function(x, include, group = NULL, test.args,
     unlist() |>
     unique() |>
     translate_vector() |>
-    paste(collapse = "; ")
+    paste(collapse = "; ") |>
+    gsub(paste("\\;", footnote_prefix), "\\;", x = _)
+
   if (footnote == "" || is_empty(footnote)) footnote <- NULL # styler: off
 
   # add results to `.$table_body` ----------------------------------------------

@@ -222,9 +222,9 @@ test_that("as_flex_table passes table column alignment correctly", {
   )
 })
 
-test_that("as_flex_table passes table footnotes & footnote abbreviations correctly", {
+test_that("as_flex_table passes table footnotes & abbreviations correctly", {
   tbl_fn <- my_tbl_summary |>
-    modify_table_styling(columns = label, footnote = "test footnote", rows = variable == "age")
+    modify_footnote_body(columns = label, footnote = "test footnote", rows = variable == "age")
   ft_tbl_fn <- tbl_fn |> as_flex_table()
 
   # footnote
@@ -234,12 +234,16 @@ test_that("as_flex_table passes table footnotes & footnote abbreviations correct
   expect_equal(nrow(ft_tbl_fn$footer$content$data), 2) # correct number of footnotes
   expect_equal(c(fn1[1], fn2[1]), c("1", "2")) # correct ordering
   expect_equal(
-    tbl_fn$table_styling$footnote$footnote, # correct labels
-    c(fn1[2], fn2[2])
+    tbl_fn$table_styling$footnote_header$footnote, # correct labels
+    fn1[2]
+  )
+  expect_equal(
+    tbl_fn$table_styling$footnote_body$footnote, # correct labels
+    fn2[2]
   )
 
   tbl_fa <- tbl_fn |>
-    modify_footnote(stat_0 = "N = number of observations", abbreviation = TRUE)
+    modify_abbreviation("N = number of observations")
   ft_tbl_fa <- tbl_fa |> as_flex_table()
 
   # footnote_abbrev
@@ -248,18 +252,12 @@ test_that("as_flex_table passes table footnotes & footnote abbreviations correct
   fn3 <- ft_tbl_fa$footer$content$data[3, ]$label$txt
 
   expect_equal(nrow(ft_tbl_fa$footer$content$data), 3) # correct number of footnotes
-  expect_equal(c(fn1[1], fn2[1], fn3[1]), c("1", "2", "3")) # correct ordering
-  expect_equal(
-    c("n (%); Median (Q1, Q3)", "N = number of observations", "test footnote"), # correct labels
-    c(fn1[2], fn2[2], fn3[2])
-  )
+  expect_equal(c(fn1[1], fn2[1], fn3[1]), c("1", "2", "Abbreviation: N = number of observations")) # correct ordering and label for abbreviation is correct
 
   # customized footnotes
   tbl <- my_tbl_summary |>
-    modify_footnote(
-      all_stat_cols() ~ "replace old footnote",
-      label = "another new footnote"
-    )
+    modify_footnote_header("replace old footnote", columns = all_stat_cols()) |>
+    modify_footnote_header("another new footnote", columns = label)
   ft_tbl <- tbl |> as_flex_table()
 
   fn1 <- ft_tbl$footer$content$data[1, ]$label$txt
@@ -270,6 +268,84 @@ test_that("as_flex_table passes table footnotes & footnote abbreviations correct
   expect_equal(
     c(fn1[2], fn2[2]), # correct labels
     c("another new footnote", "replace old footnote")
+  )
+})
+
+test_that("as_flex_table passes multiple table footnotes correctly", {
+  # testing one footnote passed to multiple columns and rows, addresses issue #2062
+  out <- my_tbl_summary |>
+    remove_footnote_header(stat_0) |>
+    modify_footnote_body(
+      columns = c(label, stat_0),
+      rows = (variable %in% "trt") & (row_type == "level"),
+      footnote = "my footnote"
+    ) |>
+    as_flex_table()
+
+  dchunk <- flextable::information_data_chunk(out)
+
+  # Checking footer's footnotes
+  cell_1 <- dchunk |> dplyr::filter(.part %in% "footer")
+
+  expect_equal(cell_1$txt, c("1", "my footnote", ""))
+
+  # Checking table notation (it is .chunk_index 2 after the normal txt)
+  notation_ind <- which(dchunk$.chunk_index > 1)
+  cell_notations <- dchunk[sort(c(notation_ind - 1, notation_ind)), ] |>
+    dplyr::filter(.part %in% "body") |>
+    dplyr::select(.row_id, .col_id, .chunk_index, txt) |>
+    dplyr::group_by(.row_id, .col_id) |>
+    dplyr::group_split()
+
+  expect_true(all(sapply(cell_notations, function(x) x$txt[nrow(x)]) == "1"))
+
+  trial_reduced <- trial |>
+    dplyr::select(grade, trt) |>
+    dplyr::filter(trt == "Drug A") |>
+    dplyr::filter(grade == "I") |>
+    dplyr::mutate(grade = factor(grade, levels = c("I")))
+
+  out <- trial_reduced |>
+    tbl_summary(
+      by = trt,
+      include = grade
+    ) |>
+    modify_footnote_body(
+      columns = stat_1,
+      rows = (variable %in% "grade") & (row_type == "level"),
+      footnote = "my footnote"
+    ) |>
+    modify_footnote_body(
+      columns = label,
+      rows = label == "grade",
+      footnote = "my footnote"
+    ) |>
+    modify_footnote_body(
+      columns = label,
+      rows = label == "I",
+      footnote = "my footnote"
+    ) |>
+    as_flex_table()
+
+  dchunk <- flextable::information_data_chunk(out)
+  cell_1 <- dchunk |> dplyr::filter(.part %in% "footer")
+
+  expect_equal(cell_1$txt, c(
+    "1", "n (%)", "",
+    "2", "my footnote", ""
+  ))
+
+  # Checking table notation (it is .chunk_index 2 after the normal txt)
+  notation_ind <- which(dchunk$.chunk_index > 1)
+  cell_notations <- dchunk[sort(c(notation_ind - 1, notation_ind)), ] |>
+    dplyr::filter(.part %in% c("body", "header")) |>
+    dplyr::select(.row_id, .col_id, .chunk_index, txt) |>
+    dplyr::group_by(.row_id, .col_id) |>
+    dplyr::group_split()
+
+  expect_equal(
+    sapply(cell_notations, function(x) x$txt[nrow(x)]),
+    c("2", "1", "2", "2")
   )
 })
 
@@ -302,7 +378,7 @@ test_that("as_flex_table passes appended glance statistics correctly", {
     ignore_attr = c("class", "names")
   )
   expect_equal(
-    tbl$table_styling$source_note[1],
+    tbl$table_styling$source_note$source_note,
     ft_tbl$footer$content$data[2, ]$label$txt
   )
   expect_equal(length(ft_tbl$body$hrule), 3)
