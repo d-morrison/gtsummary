@@ -160,3 +160,24 @@ test_that("tbl_regression(conf.int)", {
     c("label", "estimate", "p.value")
   )
 })
+
+
+test_that(
+  desc = "tbl_regression() works with ordinal covariates",
+  code = {
+
+    test_data <-
+      iris |>
+      dplyr::mutate(
+        Species =
+          Species |>
+          ordered() |>
+          C(contr = codingMatrices::contr.diff)
+      )
+
+    test_lm <- lm(Sepal.Length ~ Species, data = test_data)
+
+    tbl_regression(test_lm)
+
+  }
+)
