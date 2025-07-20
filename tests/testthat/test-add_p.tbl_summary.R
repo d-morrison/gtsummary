@@ -520,3 +520,19 @@ test_that("addressing GH #1513, where the default test was incorrect", {
     "fisher.test"
   )
 })
+
+test_that(
+  desc = "footnote-prefix works",
+  code = {
+    ft <- tbl_summary(mtcars, by = am) |>
+      add_p(footnote_prefix = "P-values from ")
+      html_file <- tempfile(fileext = ".html")
+      flextable::save_as_html(ft, path = html_file)
+      doconv::expect_snapshot_html(
+        x = html_file,
+        name = "mtcars-pval-footnote-prefix",
+        engine = "testthat"
+      )
+
+  }
+)

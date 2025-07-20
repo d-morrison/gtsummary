@@ -11,6 +11,7 @@
   group = NULL,
   include = everything(),
   test.args = NULL,
+  footnote_prefix = NULL,
   adj.vars = NULL,
   ...
 )
@@ -43,6 +44,8 @@ Variables to include in output. Default is \code{everything()}.}
 Containing additional arguments to pass to tests that accept arguments.
 For example, add an argument for all t-tests, use
 \code{test.args = all_tests("t.test") ~ list(var.equal = TRUE)}.}
+
+\item{footnote_prefix}{Optional prefix to test footnotes.}
 
 \item{adj.vars}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variables to include in adjusted calculations (e.g. in ANCOVA models).
