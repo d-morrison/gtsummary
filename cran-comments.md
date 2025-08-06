@@ -2,17 +2,15 @@
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
-## revdepcheck results
+## Reverse dependency checks
 
-We checked 23 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 28 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
- * We saw 0 new problems
- * We failed to check 2 packages
-
-### Failed to check
-
-* brms.mmrm    
-* equatiomatic 
+ * We saw 1 potential new problem.
+     - I use two tools to check reverse dependency: one tool reported no issues, and the second reported an issue with the 'guideR' package.
+     - I cloned the 'guideR' repo to investigate and R CMD Check passed without errors, warnings, or notes. Therefore, I think this is a false positive.
+     - Regardless, I know the 'guideR' maintainer personally, and I've reached out to let them know and they are aware of the upcoming gtsummary release and are ready to make a 'guideR' release if needed.
+ * We failed to check 3 packages ('brms.mmrm', 'equatiomatic', 'MiscMetabar')
 
 ## Additional Comments
 
