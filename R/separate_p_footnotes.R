@@ -18,7 +18,7 @@
 #'   tbl_summary(by = trt, include = c(age, grade)) |>
 #'   add_p() |>
 #'   separate_p_footnotes()
-separate_p_footnotes <- function(x) {
+separate_p_footnotes <- function(x, footnote_prefix = NULL) {
   set_cli_abort_call()
 
   # check inputs ---------------------------------------------------------------
@@ -48,7 +48,8 @@ separate_p_footnotes <- function(x) {
             x$cards[[calling_fun]][[variable]] |>
             dplyr::filter(.data$stat_name %in% "method") |>
             dplyr::pull("stat") |>
-            unlist()
+            unlist() |>
+            paste(footnote_prefix, . = _)
           return(footnote_i)
         }
         # otherwise, return the method column (broom::tidy-style results)
