@@ -73,7 +73,7 @@ Must be one of \code{c("column", "row", "cell")}. Default is \code{"column"}.
 
 In rarer cases, you may need to define/override the typical denominators.
 In these cases, pass an integer or a data frame. Refer to the
-\code{\link[cards:ard_categorical]{?cards::ard_categorical(denominator)}} help file for details.}
+\code{\link[cards:ard_tabulate]{?cards::ard_tabulate(denominator)}} help file for details.}
 
 \item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variables to include in the summary table. Default is \code{everything()}.}
@@ -163,7 +163,7 @@ argument, e.g. \code{value = list(varname ~ "level to show")}
 }
 
 \examples{
-\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) withAutoprint(\{ # examplesIf}
 # Example 1 ----------------------------------
 trial |>
   select(age, grade, response) |>

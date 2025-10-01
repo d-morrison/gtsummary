@@ -58,7 +58,7 @@ all rows filtered out. Default is \code{FALSE}.}
 Logical indicating whether to suppress any messaging. Default is \code{FALSE}.}
 }
 \value{
-A \code{gtsummary} of the same class as \code{x}.
+a gtsummary table of the same class as \code{x}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\cr
@@ -101,7 +101,7 @@ treatment groups observed more than 3 AEs
 }
 }
 \examples{
-\dontshow{if ((identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if ((identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true"))) withAutoprint(\{ # examplesIf}
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(AEBODSYS \%in\% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS",
                                 "EAR AND LABYRINTH DISORDERS")) |>
@@ -112,7 +112,7 @@ tbl <-
     data = ADAE_subset,
     variables = c(AEBODSYS, AEDECOD),
     by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    denominator = cards::ADSL,
     id = USUBJID,
     overall_row = TRUE
   )
