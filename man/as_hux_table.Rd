@@ -5,12 +5,7 @@
 \alias{as_hux_xlsx}
 \title{Convert gtsummary object to a huxtable object}
 \usage{
-as_hux_table(
-  x,
-  include = everything(),
-  return_calls = FALSE,
-  strip_md_bold = FALSE
-)
+as_hux_table(x, include = everything(), return_calls = FALSE)
 
 as_hux_xlsx(x, file, include = everything(), bold_header_rows = TRUE)
 }
@@ -25,8 +20,6 @@ Default is \code{everything()}.}
 
 \item{return_calls}{Logical. Default is \code{FALSE}. If \code{TRUE}, the calls are returned
 as a list of expressions.}
-
-\item{strip_md_bold}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}}
 
 \item{file}{File path for the output.}
 
@@ -50,7 +43,7 @@ The file is saved using \code{huxtable::quick_xlsx()}.
 }
 
 \examples{
-\dontshow{if (gtsummary:::is_pkg_installed("huxtable")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (gtsummary:::is_pkg_installed("huxtable")) withAutoprint(\{ # examplesIf}
 trial |>
   tbl_summary(by = trt, include = c(age, grade)) |>
   add_p() |>

@@ -1,5 +1,4 @@
 skip_on_cran()
-skip_if_not(is_pkg_installed("cardx"))
 
 test_that("add_p.tbl_continuous() works", {
   expect_silent(
@@ -12,7 +11,8 @@ test_that("add_p.tbl_continuous() works", {
 
   expect_equal(
     tbl$table_body$p.value[1],
-    1 - pf(compare$fstatistic[1], compare$fstatistic[2], compare$fstatistic[3])
+    1 - pf(compare$fstatistic[1], compare$fstatistic[2], compare$fstatistic[3]),
+    ignore_attr = TRUE
   )
 })
 
@@ -27,7 +27,8 @@ test_that("add_p.tbl_continuous(test) works", {
 
   expect_equal(
     tbl1$table_body$p.value[1],
-    compare$p.value
+    compare$p.value,
+    ignore_attr = TRUE
   )
 })
 

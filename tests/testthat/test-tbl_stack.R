@@ -1,5 +1,5 @@
 skip_on_cran()
-skip_if_not(is_pkg_installed(c("cardx", "survival", "broom.helpers")))
+skip_if_not(is_pkg_installed(c("survival", "broom.helpers")))
 
 t1_summary <- trial |>
   dplyr::filter(trt == "Drug A") |>
@@ -98,6 +98,20 @@ test_that("tbl_stack(quiet) works", {
   expect_equal(
     tbl |> as_tibble() |> names(),
     c("**Characteristic**", "**Statistic**")
+  )
+})
+
+test_that("tbl_stack(attr_order) works", {
+  tbl1 <- lm(age ~ trt, trial) |> tbl_regression()
+  tbl2 <- glm(response ~ trt, trial, family = binomial()) |> tbl_regression()
+
+  # check that we get the header from the second table (with the OR in the header)
+  expect_equal(
+    tbl_stack(list(tbl1, tbl2), attr_order = 2, quiet = TRUE) |>
+      as.data.frame() |>
+      names() |>
+      getElement(2),
+    "**log(OR)**"
   )
 })
 
@@ -275,10 +289,7 @@ test_that("tbl_stack returns expected message when unique column names are prese
   t2 <- t2_summary |>
     modify_header(stat_0 ~ "Replaced label")
 
-  expect_message(
-    tbl_stack(list(t1, t2)),
-    "Column headers among stacked tables differ"
-  )
+  expect_snapshot(tbl <- tbl_stack(list(t1, t2)))
 })
 
 test_that("tbl_stack() can stack tbl that have been previosly stacked", {

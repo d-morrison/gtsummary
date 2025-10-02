@@ -55,7 +55,7 @@ add_p.tbl_cross <- function(x,
     test <- get_theme_element("add_p.tbl_cross-arg:test", default = test)
   }
   if (missing(test.args)) {
-    test <- get_theme_element("add_p.tbl_cross-arg:test.args", default = test.args)
+    test.args <- get_theme_element("add_p.tbl_cross-arg:test.args", default = test.args)
   }
 
   if (missing(source_note)) {
@@ -85,7 +85,7 @@ add_p.tbl_cross <- function(x,
   x$inputs$data <- x$tbl_data
   x$inputs$by <- original_x_inputs$col
   x$inputs$include <- original_x_inputs$row
-  x$inputs$type <- list("categorical") |> set_names(original_x_inputs$row)
+  x$inputs$type <- rep_named(original_x_inputs$row, list("categorical"))
   x <- x |>
     add_p.tbl_summary(
       test = input_test,

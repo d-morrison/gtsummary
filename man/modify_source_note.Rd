@@ -22,7 +22,7 @@ String indicates whether text will be interpreted with
 Applies to tables printed with \code{{gt}}.}
 
 \item{source_note_id}{(\code{integers})\cr
-Integers specifying the ID of the source note to remove.
+Integers specifying the IDs of the source notes to remove.
 Source notes are indexed sequentially at the time of creation.
 Default is \code{NULL}, which removes all source notes.}
 }
@@ -38,7 +38,7 @@ the table.
 Source notes are not supported by \code{as_kable_extra()}.
 }
 \examples{
-\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) withAutoprint(\{ # examplesIf}
 # Example 1 ----------------------------------
 tbl <- tbl_summary(trial, include = c(marker, grade), missing = "no") |>
   modify_source_note("Results as of June 26, 2015")

@@ -14,6 +14,12 @@ test_that("tbl_strata works with standard use", {
       )
   )
 
+  # check the tbl_ids are correct
+  expect_equal(
+    names(tbl$tbls),
+    c('grade=\"Grade I\"', 'grade=\"Grade II\"', 'grade=\"Grade III\"')
+  )
+
   # df_strata correct
   expect_equal(nrow(tbl$df_strata), 3)
   expect_equal(names(tbl$df_strata), c("strata_1", "header"))
@@ -95,6 +101,10 @@ test_that("tbl_strata(.combine_with) works as expected", {
         .combine_with = "tbl_stack"
       )
   )
+
+  # check the `tbl_id1_lbl` column is present
+  expect_true("tbl_id1_lbl" %in% names(tbl$table_body))
+  expect_setequal(tbl$table_body$tbl_id1_lbl, paste("Grade", trial$grade))
 
   # df_strata correct
   expect_equal(nrow(tbl$df_strata), 3)
@@ -276,3 +286,4 @@ test_that("tbl_strata works with survey objects", {
       )
   )
 })
+

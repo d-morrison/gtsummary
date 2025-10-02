@@ -120,7 +120,7 @@ test_that("modify_spanning_header(text_interpret) works", {
 })
 
 test_that("modify_spanning_header() works with tbl_svysummary()", {
-  skip_if_not(is_pkg_installed(c("survey", "cardx")))
+  skip_if_not(is_pkg_installed("survey"))
 
   expect_equal(
     survey::svydesign(~1, data = as.data.frame(Titanic), weights = ~Freq) |>
@@ -174,6 +174,7 @@ test_that("modify_spanning_header() works with tbl_regression()", {
 })
 
 test_that("modify_spanning_header() works with tbl_uvregression()", {
+  skip_if_not(is_pkg_installed("broom.helpers"))
   expect_equal(
     tbl_uvregression(trial, method = glm, y = response, method.args = list(family = binomial),
                      exponentiate = TRUE, include = c("age", "grade")) |>
